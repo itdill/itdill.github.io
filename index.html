@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Conversation Summary — alex & marissa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #f7f7fb;
+      --card: #fff;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e6e6f2;
+      --accent: #6C5CE7;
+      --accent-soft: #efeaff;
+      --alex: #1f77b4;      /* blue */
+      --marissa: #ff69b4;   /* pink */
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1400px 160px at 0% 0%, var(--accent-soft) 0%, rgba(255,255,255,0) 55%), var(--bg);
+      color: var(--text);
+    }
+    .container {
+      max-width: 1400px;
+      margin: 28px auto 80px;
+      padding: 0 20px;
+    }
+    .header {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .pill {
+      font-size: 12px;
+      letter-spacing: .12em;
+      color: var(--accent);
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 800;
+    }
+    h1 {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 0;
+    }
+    .sub {
+      color: var(--muted);
+      margin-top: 4px;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    /* Two-column layout: left wide (table), right fixed (charts) */
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(600px, 1fr) 520px;
+      gap: 18px;
+      align-items: start;
+    }
+    @media (max-width: 1100px) {
+      .layout { grid-template-columns: 1fr; }
+      .charts { position: static; max-height: none; }
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 10px 20px rgba(17, 24, 39, 0.04);
+    }
+    .card h2 {
+      margin: 0 0 10px 0;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    .quick-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    @media (max-width: 640px) {
+      .quick-stats { grid-template-columns: 1fr; }
+    }
+    .mini {
+      background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+    .mini .label { color: var(--muted); font-size: 12px; }
+    .mini .value { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+
+    table.pretty {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      margin-top: 8px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    thead th {
+      text-align: left;
+      padding: 12px 14px;
+      background: #f6f7fb;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      border-bottom: 1px solid var(--border);
+    }
+    tbody td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      word-wrap: break-word;
+      overflow-wrap: anywhere;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    tbody tr:nth-child(even) td { background: #fafafc; }
+    .stat { font-weight: 600; }
+
+    /* Right column: stacked chart cards */
+    .charts {
+      position: sticky;
+      top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-height: calc(100vh - 32px);
+      overflow: auto;
+      padding-right: 4px;
+    }
+    .chart-card { padding: 14px 14px 8px; }
+    .chart-wrap { height: 360px; }
+    .chart-wrap.tall { height: 520px; }
+
+    .legend {
+      display:flex; gap:12px; align-items:center; margin:6px 0 2px;
+      color: var(--muted); font-size: 13px;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; display:inline-block; }
+    .dot.alex { background: var(--alex); }
+    .dot.marissa { background: var(--marissa); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="pill">SUMMARY</div>
+      <h1>Conversation — alex & marissa</h1>
+    </div>
+    <div class="sub">Everything you need on one page: stats on the left, all charts on the right.</div>
+
+    <div class="layout">
+      <!-- LEFT: full table -->
+      <div class="card">
+        <h2>Overview</h2>
+        <div class="quick-stats">
+          <div class="mini">
+            <div class="label">Total messages</div>
+            <div id="totalMessages" class="value">—</div>
+          </div>
+          <div class="mini">
+            <div class="label">Active days</div>
+            <div id="activeDays" class="value">—</div>
+          </div>
+          <div class="mini">
+            <div class="label">Avg msgs / active day</div>
+            <div id="avgPerDay" class="value">—</div>
+          </div>
+        </div>
+        <table class="pretty" id="statsTable">
+          <thead><tr><th style="width:36%">Statistic</th><th>Value</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <!-- RIGHT: all charts stacked -->
+      <div class="charts">
+        <div class="card chart-card">
+          <h2>Distinctive Words — alex</h2>
+          <div class="legend">
+            <span class="dot alex"></span> alex
+            <span class="dot marissa"></span> marissa
+          </div>
+          <div class="chart-wrap tall"><canvas id="chartDistinctAlex"></canvas></div>
+        </div>
+
+        <div class="card chart-card">
+          <h2>Distinctive Words — marissa</h2>
+          <div class="legend">
+            <span class="dot marissa"></span> marissa
+            <span class="dot alex"></span> alex
+          </div>
+          <div class="chart-wrap tall"><canvas id="chartDistinctMarissa"></canvas></div>
+        </div>
+
+        <div class="card chart-card">
+          <h2>Top 20 — alex</h2>
+          <div class="legend"><span class="dot alex"></span> alex</div>
+          <div class="chart-wrap"><canvas id="chartTopAlex"></canvas></div>
+        </div>
+
+        <div class="card chart-card">
+          <h2>Top 20 — marissa</h2>
+          <div class="legend"><span class="dot marissa"></span> marissa</div>
+          <div class="chart-wrap"><canvas id="chartTopMarissa"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== RAW DATA (your paste) =====
+    const RAW = `Total messages,31599
+Messages — alex,16110
+Messages — marissa,15489
+First message time,2024-11-13 20:02:26.047000+00:00
+Last message time,2025-08-31 08:41:44.740000+00:00
+Conversation span (days),290
+Active days with ≥1 msg,275
+Total days in span,291
+Messages per active day (avg),114.91
+Avg msg len (chars) — All,25.06
+Median msg len (chars) — All,19.0
+90th pct msg len (chars) — All,52.0
+Avg msg len (words) — All,5.47
+Median msg len (words) — All,4.0
+90th pct msg len (words) — All,11.0
+Messages >100 chars — All,315
+Messages == blank — All,2898
+Avg msg len (chars) — alex,27.74
+Median msg len (chars) — alex,23.0
+90th pct msg len (chars) — alex,56.0
+Avg msg len (words) — alex,5.99
+Median msg len (words) — alex,5.0
+90th pct msg len (words) — alex,12.0
+Messages >100 chars — alex,162
+Messages == blank — alex,1593
+Avg msg len (chars) — marissa,22.27
+Median msg len (chars) — marissa,17.0
+90th pct msg len (chars) — marissa,46.0
+Avg msg len (words) — marissa,4.94
+Median msg len (words) — marissa,4.0
+90th pct msg len (words) — marissa,10.0
+Messages >100 chars — marissa,153
+Messages == blank — marissa,1305
+Exclamation avg/msg — All,0.09
+Question avg/msg — All,0.03
+Ellipsis avg/msg — All,0.0
+CAPS ratio avg — All,0.055
+Contains URL % — All,0.0
+Contains email % — All,0.0
+Contains emoji % — All,8.78
+Exclamation avg/msg — alex,0.07
+Question avg/msg — alex,0.04
+Ellipsis avg/msg — alex,0.0
+CAPS ratio avg — alex,0.047
+Contains URL % — alex,0.0
+Contains email % — alex,0.0
+Contains emoji % — alex,10.59
+Exclamation avg/msg — marissa,0.1
+Question avg/msg — marissa,0.02
+Ellipsis avg/msg — marissa,0.0
+CAPS ratio avg — marissa,0.064
+Contains URL % — marissa,0.0
+Contains email % — marissa,0.0
+Contains emoji % — marissa,6.89
+Total emojis — All,3025
+Total emojis — alex,1885
+Total emojis — marissa,1140
+Most active hour (0-23),6
+Least active hour (0-23),13
+Most active weekday,Friday
+Turn changes (speaker switches),9165
+Avg gap between msgs (sec) — All,794.68
+Median gap between msgs (sec) — All,13.66
+Median reply lag marissa→alex (sec),61.19
+Median reply lag alex→marissa (sec),30.61
+"Longest same-sender streak — who, length","marissa; 64"
+Unique words — All,9257
+Unique words — alex,7087
+Unique words — marissa,5838
+Type-token ratio — All,0.115
+Type-token ratio — alex,0.158
+Type-token ratio — marissa,0.165
+Vocab Jaccard similarity (me vs them),0.396
+Distinctive words — alex (top 20),"('rlly', 63, 0); ('reacted', 40, 0); ('hay', 27, 0); ('gosh', 103, 3); ('investigation', 24, 0); ('crap', 21, 0); ('thru', 20, 0); ('sources', 19, 0); ('tiktok', 36, 1); ('ha', 17, 0); ('gulp', 16, 0); ('cuz', 309, 18); ('coulda', 14, 0); ('chris', 14, 0); ('research', 13, 0); ('louise', 13, 0); ('ud', 13, 0); ('analysis', 12, 0); ('zamn', 11, 0); ('sooooo', 11, 0)"
+Distinctive words — marissa (top 20),"('blah', 24, 0); ('gi', 22, 0); (""it's"", 18, 0); ('cause', 178, 10); ('yeha', 12, 0); ('rly', 77, 5); ('ew', 11, 0); ('hm', 11, 0); ('wowwww', 11, 0); ('mmm', 10, 0); ('omgggg', 10, 0); ('idkkk', 9, 0); ('cutie', 9, 0); ('justin', 9, 0); ('probs', 90, 9); ('broo', 8, 0); ('ee', 8, 0); ('seq', 8, 0); ('poor', 8, 0); ('vibes', 25, 2)"
+Top 20 words — alex,"('yeah', 820); ('get', 489); ('oh', 445); ('loved', 442); ('wait', 381); ('squad', 381); ('gonna', 379); ('think', 347); ('good', 340); ('don', 326); ('know', 321); ('cuz', 309); ('re', 306); ('one', 303); ('go', 294); ('time', 266); ('back', 254); ('need', 233); ('abt', 218); ('now', 214)"
+Top 20 words — marissa,"('yeah', 583); ('oh', 372); ('loved', 348); ('get', 322); ('good', 321); ('go', 318); ('don', 288); ('gonna', 277); ('one', 250); ('think', 227); ('wait', 225); ('squad', 207); ('rn', 201); ('need', 195); ('abt', 189); ('re', 187); ('now', 181); ('wanna', 179); ('cause', 178); ('time', 177)"
+Top 10 bigrams — alex,"('oh gosh', 87); ('don know', 43); ('don think', 34); ('let know', 34); ('next time', 32); ('mama dils', 31); ('think re', 30); ('didn know', 29); ('get back', 29); ('don wanna', 28)"
+Top 10 bigrams — marissa,"('wanna go', 37); ('uh huh', 30); ('gonna get', 29); ('go home', 28); ('don wanna', 26); ('go sleep', 25); ('don think', 22); ('uh oh', 21); ('loved yeah', 20); ('p fire', 20)"`;
+
+    // ===== Helpers =====
+    const HIDE_KEYS = new Set([
+      "Distinctive words — alex (top 20)",
+      "Distinctive words — marissa (top 20)",
+      "Top 20 words — alex",
+      "Top 20 words — marissa",
+      "Top 10 bigrams — alex",
+      "Top 10 bigrams — marissa",
+    ]);
+
+    function csvToPairs(csv) {
+      const lines = csv.split(/\r?\n/).filter(Boolean);
+      const rows = [];
+      let bufferKey = null;
+      let bufferVal = null;
+
+      for (let line of lines) {
+        let m = line.match(/^([^,]+),(.*)$/);
+        if (!m) continue;
+        let key = m[1].trim();
+        let val = m[2].trim();
+
+        if (val.startsWith('"') && !val.endsWith('"')) {
+          bufferKey = key; bufferVal = val;
+          continue;
+        }
+        if (bufferKey !== null) {
+          bufferVal += "\\n" + line;
+          if (line.trim().endsWith('"')) {
+            rows.push([bufferKey, bufferVal.replace(/^"/, "").replace(/"$/, "")]);
+            bufferKey = bufferVal = null;
+          }
+          continue;
+        }
+        if (val.startsWith('"') && val.endsWith('"')) {
+          val = val.slice(1, -1);
+        }
+        rows.push([key, val]);
+      }
+      return rows;
+    }
+    function sanitizeTupleList(str) {
+      if (!str) return "";
+      let s = String(str)
+        .replace(/\n/g, " ")
+        .replace(/;/g, ",")
+        .replace(/[“”]/g, '"')
+        .replace(/’/g, "'")
+        .replace(/""/g, '"');
+      if (!s.trim().startsWith("[")) s = "[" + s + "]";
+      s = s.replace(/,\s*\]$/, "]");
+      return s;
+    }
+    function parseWordTriples(str) {
+      const s = sanitizeTupleList(str);
+      try {
+        const jsonish = s
+          .replace(/\(\s*'([^']+)'\s*,/g, '["$1",')
+          .replace(/\(\s*"([^"]+)"\s*,/g, '["$1",')
+          .replace(/\),/g, "],")
+          .replace(/\)\s*\]/g, "]]")
+          .replace(/\)\s*\s*$/g, "]]");
+        const arr = JSON.parse(jsonish);
+        return arr.map(it => ({ word: it[0], alex: Number(it[1]) || 0, marissa: Number(it[2]) || 0 }));
+      } catch (e) {
+        console.warn("Failed to parse triples:", e, str);
+        return [];
+      }
+    }
+    function parseWordPairs(str) {
+      const s = sanitizeTupleList(str);
+      try {
+        const jsonish = s
+          .replace(/\(\s*'([^']+)'\s*,/g, '["$1",')
+          .replace(/\(\s*"([^"]+)"\s*,/g, '["$1",')
+          .replace(/\),/g, "],")
+          .replace(/\)\s*\]/g, "]]")
+          .replace(/\)\s*\s*$/g, "]]");
+        const arr = JSON.parse(jsonish);
+        return arr.map(it => ({ word: it[0], count: Number(it[1]) || 0 }));
+      } catch (e) {
+        console.warn("Failed to parse pairs:", e, str);
+        return [];
+      }
+    }
+    function sortedByTotal(triples) {
+      return [...triples].map(t => ({ ...t, total: (t.alex||0) + (t.marissa||0) })).sort((a,b) => b.total - a.total);
+    }
+
+    // ===== Parse data and populate =====
+    const rows = csvToPairs(RAW);
+    const dataMap = Object.fromEntries(rows);
+
+    // quick stats
+    const totalMessages = Number(dataMap["Total messages"] || 0);
+    const activeDays = Number((dataMap["Active days with ≥1 msg"] || "0").toString().replace(/,/g, ""));
+    const avgPerDay = Number(dataMap["Messages per active day (avg)"] || 0);
+    document.getElementById("totalMessages").textContent = totalMessages.toLocaleString();
+    document.getElementById("activeDays").textContent = activeDays.toLocaleString();
+    document.getElementById("avgPerDay").textContent = avgPerDay.toLocaleString(undefined, { maximumFractionDigits: 2 });
+
+    // table (filtered)
+    const tableBody = document.querySelector("#statsTable tbody");
+    rows.forEach(([k,v]) => {
+      if (HIDE_KEYS.has(k)) return;  // skip rows shown in charts
+      const tr = document.createElement("tr");
+      const tdK = document.createElement("td");
+      tdK.className = "stat";
+      tdK.textContent = k;
+      const tdV = document.createElement("td");
+      tdV.textContent = v;
+      tr.appendChild(tdK); tr.appendChild(tdV);
+      tableBody.appendChild(tr);
+    });
+
+    // charts
+    const distAlex = sortedByTotal(parseWordTriples(dataMap["Distinctive words — alex (top 20)"]));
+    const distMari = sortedByTotal(parseWordTriples(dataMap["Distinctive words — marissa (top 20)"]));
+    const topAlex = parseWordPairs(dataMap["Top 20 words — alex"]);
+    const topMari = parseWordPairs(dataMap["Top 20 words — marissa"]);
+
+    const cssAlex = getComputedStyle(document.documentElement).getPropertyValue('--alex').trim();
+    const cssMari = getComputedStyle(document.documentElement).getPropertyValue('--marissa').trim();
+
+    function hBarStacked(ctx, labels, aVals, bVals, aLabel="alex", bLabel="marissa") {
+      return new Chart(ctx, {
+        type: "bar",
+        data: { labels, datasets: [
+          { label: aLabel, data: aVals, backgroundColor: cssAlex },
+          { label: bLabel, data: bVals, backgroundColor: cssMari }
+        ]},
+        options: {
+          indexAxis: "y",
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: "bottom" } },
+          scales: { x: { stacked:true, grid:{ color:"#f0f0f5" } }, y: { stacked:true, grid:{ display:false } } }
+        }
+      });
+    }
+    function hBar(ctx, labels, vals, color, label) {
+      return new Chart(ctx, {
+        type: "bar",
+        data: { labels, datasets: [{ label, data: vals, backgroundColor: color }] },
+        options: {
+          indexAxis: "y",
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display:false } },
+          scales: { x: { grid:{ color:"#f0f0f5" } }, y: { grid:{ display:false } } }
+        }
+      });
+    }
+
+    // Distinctive charts
+    hBarStacked(
+      document.getElementById("chartDistinctAlex"),
+      distAlex.map(x=>x.word),
+      distAlex.map(x=>x.alex),
+      distAlex.map(x=>x.marissa)
+    );
+    hBarStacked(
+      document.getElementById("chartDistinctMarissa"),
+      distMari.map(x=>x.word),
+      distMari.map(x=>x.alex),
+      distMari.map(x=>x.marissa)
+    );
+
+    // Top words (explicit colors to avoid blue bug)
+    hBar(document.getElementById("chartTopAlex"), topAlex.map(x=>x.word), topAlex.map(x=>x.count), cssAlex, "Top 20 — alex");
+    hBar(document.getElementById("chartTopMarissa"), topMari.map(x=>x.word), topMari.map(x=>x.count), cssMari, "Top 20 — marissa");
+  </script>
+</body>
+</html>
