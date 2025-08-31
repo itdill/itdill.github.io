@@ -11,203 +11,160 @@
   <style>
     :root {
       --bg: #f7f7fb;
-      --card: #fff;
+      --card: #ffffff;
       --text: #111827;
       --muted: #6b7280;
       --border: #e6e6f2;
       --accent: #6C5CE7;
       --accent-soft: #efeaff;
-      --alex: #1f77b4;      /* blue */
-      --marissa: #ff69b4;   /* pink */
+      --alex: #1f77b4;
+      --marissa: #ff69b4;
+      --grid: #e9e9f2;
+      --grid-faint: #f4f4fa;
+      --shadow: rgba(17, 24, 39, 0.04);
     }
+    body.dark {
+      --bg: #0d1117;
+      --card: #111827;
+      --text: #ffffff;   /* ALL text pure white in dark */
+      --muted: #ffffff;
+      --border: #243041;
+      --accent: #8b7cf0;
+      --accent-soft: #181f2e;
+      --alex: #60a5fa;
+      --marissa: #ff7bc1;
+      --grid: #2a3447;
+      --grid-faint: #1a2232;
+      --shadow: rgba(0, 0, 0, 0.35);
+    }
+
     * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
       background: radial-gradient(1400px 160px at 0% 0%, var(--accent-soft) 0%, rgba(255,255,255,0) 55%), var(--bg);
       color: var(--text);
+      transition: background-color .2s ease, color .2s ease;
     }
-    .container {
-      max-width: 1400px;
-      margin: 28px auto 80px;
-      padding: 0 20px;
-    }
-    .header {
-      display: flex;
-      align-items: baseline;
-      gap: 14px;
-      margin-bottom: 18px;
-    }
+    .container { max-width: 1480px; margin: 28px auto 80px; padding: 0 20px; }
+    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    .lefthead { display:flex; align-items: baseline; gap: 14px; }
     .pill {
-      font-size: 12px;
-      letter-spacing: .12em;
-      color: var(--accent);
-      background: var(--accent-soft);
-      border: 1px solid var(--accent);
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-weight: 800;
+      font-size: 12px; letter-spacing: .12em; color: var(--accent); background: var(--accent-soft);
+      border: 1px solid var(--accent); padding: 6px 10px; border-radius: 999px; font-weight: 800;
     }
-    h1 {
-      font-size: 30px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      margin: 0;
-    }
-    .sub {
-      color: var(--muted);
-      margin-top: 4px;
-      font-size: 14px;
-      margin-bottom: 10px;
-    }
+    h1 { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; margin: 0; }
+    .sub { color: var(--muted); margin-top: 4px; font-size: 14px; }
 
-    /* Two-column layout: left wide (table), right fixed (charts) */
-    .layout {
-      display: grid;
-      grid-template-columns: minmax(600px, 1fr) 520px;
-      gap: 18px;
-      align-items: start;
+    .theme-toggle { display:flex; gap:10px; align-items:center; }
+    .toggle-btn {
+      border: 1px solid var(--border); background: var(--card); color: var(--text);
+      border-radius: 10px; padding: 8px 12px; cursor: pointer; box-shadow: 0 8px 18px var(--shadow); font-weight: 700;
     }
-    @media (max-width: 1100px) {
-      .layout { grid-template-columns: 1fr; }
-      .charts { position: static; max-height: none; }
-    }
+    .toggle-btn:active { transform: translateY(1px); }
 
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px;
-      box-shadow: 0 10px 20px rgba(17, 24, 39, 0.04);
-    }
-    .card h2 {
-      margin: 0 0 10px 0;
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-    }
-    .quick-stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 8px;
-    }
-    @media (max-width: 640px) {
-      .quick-stats { grid-template-columns: 1fr; }
-    }
+    .layout { display: grid; grid-template-columns: minmax(700px, 1fr) 520px; gap: 18px; align-items: start; }
+    @media (max-width: 1200px) { .layout { grid-template-columns: 1fr; } .charts { position: static; max-height: none; } }
+
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 18px; box-shadow: 0 10px 20px var(--shadow); }
+    .card h2 { margin: 0 0 10px 0; font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
+
+    .quick-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 8px; }
+    @media (max-width: 920px) { .quick-stats { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 520px) { .quick-stats { grid-template-columns: 1fr; } }
     .mini {
-      background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px 14px;
+      background: linear-gradient(180deg, var(--card) 0%, rgba(0,0,0,0.02) 100%); border: 1px solid var(--border);
+      border-radius: 12px; padding: 12px 14px;
     }
     .mini .label { color: var(--muted); font-size: 12px; }
     .mini .value { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
 
     table.pretty {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
-      margin-top: 8px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
+      width: 100%; border-collapse: collapse; table-layout: fixed; margin-top: 8px; border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden; color: var(--text);
     }
     thead th {
-      text-align: left;
-      padding: 12px 14px;
-      background: #f6f7fb;
-      color: var(--muted);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      border-bottom: 1px solid var(--border);
+      text-align: left; padding: 12px 14px; background: var(--grid-faint); color: var(--muted); font-size: 12px;
+      text-transform: uppercase; letter-spacing: .08em; border-bottom: 1px solid var(--border);
     }
     tbody td {
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--border);
-      vertical-align: top;
-      word-wrap: break-word;
-      overflow-wrap: anywhere;
-      font-size: 14px;
-      line-height: 1.5;
+      padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: top; word-wrap: break-word;
+      overflow-wrap: anywhere; font-size: 14px; line-height: 1.5; color: var(--text);
     }
-    tbody tr:nth-child(even) td { background: #fafafc; }
+    tbody tr:nth-child(even) td { background: color-mix(in oklab, var(--grid-faint) 35%, transparent); }
     .stat { font-weight: 600; }
+    .center { text-align: center; }
 
-    /* Right column: stacked chart cards */
-    .charts {
-      position: sticky;
-      top: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      max-height: calc(100vh - 32px);
-      overflow: auto;
-      padding-right: 4px;
-    }
+    .charts { position: sticky; top: 16px; display: flex; flex-direction: column; gap: 16px; max-height: calc(100vh - 32px);
+              overflow: auto; padding-right: 4px; }
     .chart-card { padding: 14px 14px 8px; }
     .chart-wrap { height: 360px; }
     .chart-wrap.tall { height: 520px; }
-
-    .legend {
-      display:flex; gap:12px; align-items:center; margin:6px 0 2px;
-      color: var(--muted); font-size: 13px;
-    }
+    .legend { display:flex; gap:12px; align-items:center; margin:6px 0 2px; color: var(--text); font-size: 13px; }
     .dot { width: 10px; height: 10px; border-radius: 50%; display:inline-block; }
-    .dot.alex { background: var(--alex); }
-    .dot.marissa { background: var(--marissa); }
+    .dot.alex { background: var(--alex); } .dot.marissa { background: var(--marissa); }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <div class="pill">SUMMARY</div>
-      <h1>Conversation — alex & marissa</h1>
+      <div class="lefthead">
+        <div class="pill">SUMMARY</div>
+        <div>
+          <h1>Conversation — alex & marissa</h1>
+          <div class="sub">Single table (alex, marissa, all) and charts on the right.</div>
+        </div>
+      </div>
+      <div class="theme-toggle">
+        <button id="themeBtn" class="toggle-btn" aria-label="Toggle dark mode">🌙 Dark</button>
+      </div>
     </div>
-    <div class="sub">Everything you need on one page: stats on the left, all charts on the right.</div>
 
     <div class="layout">
-      <!-- LEFT: full table -->
-      <div class="card">
-        <h2>Overview</h2>
-        <div class="quick-stats">
-          <div class="mini">
-            <div class="label">Total messages</div>
-            <div id="totalMessages" class="value">—</div>
-          </div>
-          <div class="mini">
-            <div class="label">Active days</div>
-            <div id="activeDays" class="value">—</div>
-          </div>
-          <div class="mini">
-            <div class="label">Avg msgs / active day</div>
-            <div id="avgPerDay" class="value">—</div>
+      <!-- LEFT: overview + single table -->
+      <div>
+        <div class="card">
+          <h2>Quick Overview</h2>
+          <div class="quick-stats">
+            <div class="mini"><div class="label">Total messages</div>  <div id="totalMessages" class="value">—</div></div>
+            <div class="mini"><div class="label">Total words</div>     <div id="totalWords" class="value">—</div></div>
+            <div class="mini"><div class="label">Active days</div>      <div id="activeDays" class="value">—</div></div>
+            <div class="mini"><div class="label">Avg msgs / active day</div><div id="avgPerDay" class="value">—</div></div>
+
+            <div class="mini"><div class="label">Median msg gap</div>   <div id="medianGap"  class="value">—</div></div>
+            <div class="mini"><div class="label">Avg msg gap</div>      <div id="meanGap"    class="value">—</div></div>
+            <div class="mini"><div class="label">Median reply lag</div> <div id="medianReply" class="value">—</div></div>
+            <div class="mini"><div class="label">Avg reply lag</div>    <div id="meanReply"   class="value">—</div></div>
           </div>
         </div>
-        <table class="pretty" id="statsTable">
-          <thead><tr><th style="width:36%">Statistic</th><th>Value</th></tr></thead>
-          <tbody></tbody>
-        </table>
+
+        <div class="card" style="margin-top:14px;">
+          <h2>Comparison — alex vs marissa</h2>
+          <table class="pretty" id="compareTable">
+            <thead>
+              <tr>
+                <th style="width:40%">Metric</th>
+                <th class="center">alex</th>
+                <th class="center">marissa</th>
+                <th class="center">all</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </div>
 
-      <!-- RIGHT: all charts stacked -->
+      <!-- RIGHT: charts -->
       <div class="charts">
         <div class="card chart-card">
           <h2>Distinctive Words — alex</h2>
-          <div class="legend">
-            <span class="dot alex"></span> alex
-            <span class="dot marissa"></span> marissa
-          </div>
+          <div class="legend"><span class="dot alex"></span> alex <span class="dot marissa"></span> marissa</div>
           <div class="chart-wrap tall"><canvas id="chartDistinctAlex"></canvas></div>
         </div>
 
         <div class="card chart-card">
           <h2>Distinctive Words — marissa</h2>
-          <div class="legend">
-            <span class="dot marissa"></span> marissa
-            <span class="dot alex"></span> alex
-          </div>
+          <div class="legend"><span class="dot marissa"></span> marissa <span class="dot alex"></span> alex</div>
           <div class="chart-wrap tall"><canvas id="chartDistinctMarissa"></canvas></div>
         </div>
 
@@ -222,133 +179,88 @@
           <div class="legend"><span class="dot marissa"></span> marissa</div>
           <div class="chart-wrap"><canvas id="chartTopMarissa"></canvas></div>
         </div>
+
+        <!-- NEW: One combined reply-time frequency chart -->
+        <div class="card chart-card">
+          <h2>Reply Time Frequency — All Scales (log)</h2>
+          <div class="legend"><span class="dot alex"></span> alex replies <span class="dot marissa"></span> marissa replies</div>
+          <div class="chart-wrap"><canvas id="chartReplyAll"></canvas></div>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    // ===== RAW DATA (your paste) =====
-    const RAW = `Total messages,31599
-Messages — alex,16110
-Messages — marissa,15489
-First message time,2024-11-13 20:02:26.047000+00:00
-Last message time,2025-08-31 08:41:44.740000+00:00
-Conversation span (days),290
-Active days with ≥1 msg,275
-Total days in span,291
-Messages per active day (avg),114.91
-Avg msg len (chars) — All,25.06
-Median msg len (chars) — All,19.0
-90th pct msg len (chars) — All,52.0
-Avg msg len (words) — All,5.47
-Median msg len (words) — All,4.0
-90th pct msg len (words) — All,11.0
-Messages >100 chars — All,315
-Messages == blank — All,2898
-Avg msg len (chars) — alex,27.74
-Median msg len (chars) — alex,23.0
-90th pct msg len (chars) — alex,56.0
-Avg msg len (words) — alex,5.99
-Median msg len (words) — alex,5.0
-90th pct msg len (words) — alex,12.0
-Messages >100 chars — alex,162
-Messages == blank — alex,1593
-Avg msg len (chars) — marissa,22.27
-Median msg len (chars) — marissa,17.0
-90th pct msg len (chars) — marissa,46.0
-Avg msg len (words) — marissa,4.94
-Median msg len (words) — marissa,4.0
-90th pct msg len (words) — marissa,10.0
-Messages >100 chars — marissa,153
-Messages == blank — marissa,1305
-Exclamation avg/msg — All,0.09
-Question avg/msg — All,0.03
-Ellipsis avg/msg — All,0.0
-CAPS ratio avg — All,0.055
-Contains URL % — All,0.0
-Contains email % — All,0.0
-Contains emoji % — All,8.78
-Exclamation avg/msg — alex,0.07
-Question avg/msg — alex,0.04
-Ellipsis avg/msg — alex,0.0
-CAPS ratio avg — alex,0.047
-Contains URL % — alex,0.0
-Contains email % — alex,0.0
-Contains emoji % — alex,10.59
-Exclamation avg/msg — marissa,0.1
-Question avg/msg — marissa,0.02
-Ellipsis avg/msg — marissa,0.0
-CAPS ratio avg — marissa,0.064
-Contains URL % — marissa,0.0
-Contains email % — marissa,0.0
-Contains emoji % — marissa,6.89
-Total emojis — All,3025
-Total emojis — alex,1885
-Total emojis — marissa,1140
-Most active hour (0-23),6
-Least active hour (0-23),13
-Most active weekday,Friday
-Turn changes (speaker switches),9165
-Avg gap between msgs (sec) — All,794.68
-Median gap between msgs (sec) — All,13.66
-Median reply lag marissa→alex (sec),61.19
-Median reply lag alex→marissa (sec),30.61
-"Longest same-sender streak — who, length","marissa; 64"
-Unique words — All,9257
-Unique words — alex,7087
-Unique words — marissa,5838
-Type-token ratio — All,0.115
-Type-token ratio — alex,0.158
-Type-token ratio — marissa,0.165
-Vocab Jaccard similarity (me vs them),0.396
-Distinctive words — alex (top 20),"('rlly', 63, 0); ('reacted', 40, 0); ('hay', 27, 0); ('gosh', 103, 3); ('investigation', 24, 0); ('crap', 21, 0); ('thru', 20, 0); ('sources', 19, 0); ('tiktok', 36, 1); ('ha', 17, 0); ('gulp', 16, 0); ('cuz', 309, 18); ('coulda', 14, 0); ('chris', 14, 0); ('research', 13, 0); ('louise', 13, 0); ('ud', 13, 0); ('analysis', 12, 0); ('zamn', 11, 0); ('sooooo', 11, 0)"
-Distinctive words — marissa (top 20),"('blah', 24, 0); ('gi', 22, 0); (""it's"", 18, 0); ('cause', 178, 10); ('yeha', 12, 0); ('rly', 77, 5); ('ew', 11, 0); ('hm', 11, 0); ('wowwww', 11, 0); ('mmm', 10, 0); ('omgggg', 10, 0); ('idkkk', 9, 0); ('cutie', 9, 0); ('justin', 9, 0); ('probs', 90, 9); ('broo', 8, 0); ('ee', 8, 0); ('seq', 8, 0); ('poor', 8, 0); ('vibes', 25, 2)"
-Top 20 words — alex,"('yeah', 820); ('get', 489); ('oh', 445); ('loved', 442); ('wait', 381); ('squad', 381); ('gonna', 379); ('think', 347); ('good', 340); ('don', 326); ('know', 321); ('cuz', 309); ('re', 306); ('one', 303); ('go', 294); ('time', 266); ('back', 254); ('need', 233); ('abt', 218); ('now', 214)"
-Top 20 words — marissa,"('yeah', 583); ('oh', 372); ('loved', 348); ('get', 322); ('good', 321); ('go', 318); ('don', 288); ('gonna', 277); ('one', 250); ('think', 227); ('wait', 225); ('squad', 207); ('rn', 201); ('need', 195); ('abt', 189); ('re', 187); ('now', 181); ('wanna', 179); ('cause', 178); ('time', 177)"
-Top 10 bigrams — alex,"('oh gosh', 87); ('don know', 43); ('don think', 34); ('let know', 34); ('next time', 32); ('mama dils', 31); ('think re', 30); ('didn know', 29); ('get back', 29); ('don wanna', 28)"
-Top 10 bigrams — marissa,"('wanna go', 37); ('uh huh', 30); ('gonna get', 29); ('go home', 28); ('don wanna', 26); ('go sleep', 25); ('don think', 22); ('uh oh', 21); ('loved yeah', 20); ('p fire', 20)"`;
+    const RAW = 'Total messages,31599\nMessages — alex,16110\nMessages — marissa,15489\nFirst message time,2024-11-13 20:02:26.047000+00:00\nLast message time,2025-08-31 08:41:44.740000+00:00\nConversation span (days),290\nActive days with ≥1 msg,275\nTotal days in span,291\nMessages per active day (avg),114.91\nAvg msg len (chars) — All,25.06\nMedian msg len (chars) — All,19.0\n90th pct msg len (chars) — All,52.0\nAvg msg len (words) — All,5.47\nMedian msg len (words) — All,4.0\n90th pct msg len (words) — All,11.0\nMessages >100 chars — All,315\nMessages == blank — All,2898\nAvg msg len (chars) — alex,27.74\nMedian msg len (chars) — alex,23.0\n90th pct msg len (chars) — alex,56.0\nAvg msg len (words) — alex,5.99\nMedian msg len (words) — alex,5.0\n90th pct msg len (words) — alex,12.0\nMessages >100 chars — alex,162\nMessages == blank — alex,1593\nAvg msg len (chars) — marissa,22.27\nMedian msg len (chars) — marissa,17.0\n90th pct msg len (chars) — marissa,46.0\nAvg msg len (words) — marissa,4.94\nMedian msg len (words) — marissa,4.0\n90th pct msg len (words) — marissa,10.0\nMessages >100 chars — marissa,153\nMessages == blank — marissa,1305\nExclamation avg/msg — All,0.09\nCAPS ratio avg — All,0.055\nContains emoji % — All,8.78\nExclamation avg/msg — alex,0.07\nQuestion avg/msg — alex,0.04\nCAPS ratio avg — alex,0.047\nContains emoji % — alex,10.59\nExclamation avg/msg — marissa,0.1\nQuestion avg/msg — marissa,0.02\nCAPS ratio avg — marissa,0.064\nContains emoji % — marissa,6.89\nTotal emojis — All,3025\nTotal emojis — alex,1885\nTotal emojis — marissa,1140\nMost active hour (0-23),6\nLeast active hour (0-23),13\nMost active weekday,Friday\nTurn changes (speaker switches),9165\nAvg gap between msgs (sec) — All,794.68\nMedian gap between msgs (sec) — All,13.66\nMedian reply lag marissa→alex (sec),61.19\nMedian reply lag alex→marissa (sec),30.61\n"Longest same-sender streak — who, length","marissa; 64"\nUnique words — All,9257\nUnique words — alex,7087\nUnique words — marissa,5838\nType-token ratio — All,0.115\nType-token ratio — alex,0.158\nType-token ratio — marissa,0.165\nVocab Jaccard similarity (me vs them),0.396\nDistinctive words — alex (top 20),"(\'rlly\', 63, 0); (\'reacted\', 40, 0); (\'hay\', 27, 0); (\'gosh\', 103, 3); (\'investigation\', 24, 0); (\'crap\', 21, 0); (\'thru\', 20, 0); (\'sources\', 19, 0); (\'tiktok\', 36, 1); (\'ha\', 17, 0); (\'gulp\', 16, 0); (\'cuz\', 309, 18); (\'coulda\', 14, 0); (\'chris\', 14, 0); (\'research\', 13, 0); (\'louise\', 13, 0); (\'ud\', 13, 0); (\'analysis\', 12, 0); (\'zamn\', 11, 0); (\'sooooo\', 11, 0)"\nDistinctive words — marissa (top 20),"(\'blah\', 24, 0); (\'gi\', 22, 0); (""it\'s"", 18, 0); (\'cause\', 178, 10); (\'yeha\', 12, 0); (\'rly\', 77, 5); (\'ew\', 11, 0); (\'hm\', 11, 0); (\'wowwww\', 11, 0); (\'mmm\', 10, 0); (\'omgggg\', 10, 0); (\'idkkk\', 9, 0); (\'cutie\', 9, 0); (\'justin\', 9, 0); (\'probs\', 90, 9); (\'broo\', 8, 0); (\'ee\', 8, 0); (\'seq\', 8, 0); (\'poor\', 8, 0); (\'vibes\', 25, 2)"\nTop 20 words — alex,"(\'yeah\', 820); (\'get\', 489); (\'oh\', 445); (\'loved\', 442); (\'wait\', 381); (\'squad\', 381); (\'gonna\', 379); (\'think\', 347); (\'good\', 340); (\'don\', 326); (\'know\', 321); (\'cuz\', 309); (\'re\', 306); (\'one\', 303); (\'go\', 294); (\'time\', 266); (\'back\', 254); (\'need\', 233); (\'abt\', 218); (\'now\', 214)"\nTop 20 words — marissa,"(\'yeah\', 583); (\'oh\', 372); (\'loved\', 348); (\'get\', 322); (\'good\', 321); (\'go\', 318); (\'don\', 288); (\'gonna\', 277); (\'one\', 250); (\'think\', 227); (\'wait\', 225); (\'squad\', 207); (\'rn\', 201); (\'need\', 195); (\'abt\', 189); (\'re\', 187); (\'now\', 181); (\'wanna\', 179); (\'cause\', 178); (\'time\', 177)"\nTop 10 bigrams — alex,"(\'oh gosh\', 87); (\'don know\', 43); (\'don think\', 34); (\'let know\', 34); (\'next time\', 32); (\'mama dils\', 31); (\'think re\', 30); (\'didn know\', 29); (\'get back\', 29); (\'don wanna\', 28)"\nTop 10 bigrams — marissa,"(\'wanna go\', 37); (\'uh huh\', 30); (\'gonna get\', 29); (\'go home\', 28); (\'don wanna\', 26); (\'go sleep\', 25); (\'don think\', 22); (\'uh oh\', 21); (\'loved yeah\', 20); (\'p fire\', 20)"\n';
+    const WORD_COUNT = 245290;
 
-    // ===== Helpers =====
-    const HIDE_KEYS = new Set([
-      "Distinctive words — alex (top 20)",
-      "Distinctive words — marissa (top 20)",
-      "Top 20 words — alex",
-      "Top 20 words — marissa",
-      "Top 10 bigrams — alex",
-      "Top 10 bigrams — marissa",
-    ]);
+    // Timing stats (computed earlier)
+    const STATS = {
+      medianGapSec:   13.6485365,
+      meanGapSec:     794.4034018925248,
+      medianReplyAlexSec:    61.193238,
+      meanReplyAlexSec:      2062.7885655848972,
+      medianReplyMarissaSec: 30.606251,
+      meanReplyMarissaSec:   2353.6646411551724,
+      medianReplyAnySec: 43.643885,
+      meanReplyAnySec:   2208.2266033700353,
+    };
 
+    // One-chart histogram payload (edges + counts)
+    const LOG_HIST = {"edges": [1.0, 1.2124664341253348, 1.470074853880605, 1.7824164159819398, 2.161120076012082, 2.6202855522790416, 3.1770082799619033, 3.8520159003920718, 4.670439982942466, 5.662751711914643, 6.865896375482281, 8.324668895455062, 10.09338161094649, 12.237886410090518, 14.838026496873342, 17.99060907612126, 21.813009634267626, 26.44754200880204, 32.06675695079221, 38.87986645409082, 47.140533038860724, 57.15631399639501, 69.30011221895701, 84.02405994660434, 101.87635234419278, 123.5216576484596, 149.76586378627817, 181.5860828186493, 220.16703032191538, 266.94513416637744, 323.6620149298167, 392.4293291037757, 475.8073893046523, 576.9004886406966, 699.4724783073486, 848.0869015421214, 1028.2769013411807, 1246.75122786259, 1511.644015487937, 1832.817629125561, 2222.2298551879194, 2694.379108326555, 3266.8442296545004, 3960.9389739721178, 4802.505553560036, 5822.876783392053, 7060.042649910561, 8560.064736509836, 10378.791166958114, 12583.935916733224, 15257.599908223256, 18499.327754034482, 22429.81395565003, 27195.396544901654, 32973.505473421355, 39979.268601971395, 48473.52124077121, 58772.51744829654, 71259.70465510526, 86399.99999999999], "alex_counts": [34, 45, 74, 51, 54, 66, 61, 100, 117, 130, 144, 124, 136, 139, 167, 163, 108, 110, 115, 95, 85, 76, 67, 87, 77, 69, 83, 68, 64, 78, 66, 68, 73, 82, 62, 62, 66, 74, 84, 87, 81, 98, 100, 98, 104, 114, 84, 66, 35, 27, 10, 21, 13, 24, 31, 11, 1, 1, 2], "marissa_counts": [24, 56, 72, 70, 70, 83, 96, 100, 140, 168, 191, 202, 206, 188, 152, 164, 101, 91, 91, 78, 63, 68, 68, 60, 56, 60, 56, 66, 43, 52, 50, 65, 45, 60, 71, 60, 73, 80, 69, 72, 91, 89, 90, 79, 73, 79, 81, 58, 40, 16, 10, 11, 30, 60, 33, 18, 6, 0, 0]};
+
+    // Hide tuple-heavy bases in table
+    const HIDE_BASES = new Set(["Top 20 words", "Top 10 bigrams"]);
+
+    // ---- Theme handling (ensure ALL chart text turns white in dark mode) ----
+    const btn = document.getElementById("themeBtn");
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const saved = localStorage.getItem("theme");
+    if ((saved === "dark") || (!saved && prefersDark)) {
+      document.body.classList.add("dark");
+      btn.textContent = "☀️ Light";
+    }
+    btn.addEventListener("click", () => {
+      const dark = document.body.classList.toggle("dark");
+      btn.textContent = dark ? "☀️ Light" : "🌙 Dark";
+      localStorage.setItem("theme", dark ? "dark" : "light");
+      setTimeout(() => { setChartDefaultsForTheme(); updateChartsForTheme(); }, 0);
+    });
+
+    function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+    function gridColor() { return css('--grid'); }
+    function textColor() { return css('--text'); }
+
+    function setChartDefaultsForTheme() {
+      const t = textColor() || '#ffffff';
+      const g = gridColor() || '#2a3447';
+      Chart.defaults.color = t;         // default text/labels color
+      Chart.defaults.borderColor = g;   // default grid/border color
+    }
+    setChartDefaultsForTheme();
+
+    // ---- Parse CSV-like pairs ----
     function csvToPairs(csv) {
       const lines = csv.split(/\r?\n/).filter(Boolean);
       const rows = [];
-      let bufferKey = null;
-      let bufferVal = null;
-
+      let bufferKey = null, bufferVal = null;
       for (let line of lines) {
-        let m = line.match(/^([^,]+),(.*)$/);
-        if (!m) continue;
-        let key = m[1].trim();
-        let val = m[2].trim();
-
-        if (val.startsWith('"') && !val.endsWith('"')) {
-          bufferKey = key; bufferVal = val;
-          continue;
-        }
+        let m = line.match(/^([^,]+),(.*)$/); if (!m) continue;
+        let key = m[1].trim(); let val = m[2].trim();
+        if (val.startsWith('"') && !val.endsWith('"')) { bufferKey = key; bufferVal = val; continue; }
         if (bufferKey !== null) {
-          bufferVal += "\\n" + line;
+          bufferVal += "\n" + line;
           if (line.trim().endsWith('"')) {
             rows.push([bufferKey, bufferVal.replace(/^"/, "").replace(/"$/, "")]);
             bufferKey = bufferVal = null;
-          }
-          continue;
+          } continue;
         }
-        if (val.startsWith('"') && val.endsWith('"')) {
-          val = val.slice(1, -1);
-        }
+        if (val.startsWith('"') && val.endsWith('"')) val = val.slice(1, -1);
         rows.push([key, val]);
       }
       return rows;
     }
+
     function sanitizeTupleList(str) {
       if (!str) return "";
       let s = String(str)
@@ -361,7 +273,8 @@ Top 10 bigrams — marissa,"('wanna go', 37); ('uh huh', 30); ('gonna get', 29);
       s = s.replace(/,\s*\]$/, "]");
       return s;
     }
-    function parseWordTriples(str) {
+
+    function parseWordTriples(str, firstIs = "alex") {
       const s = sanitizeTupleList(str);
       try {
         const jsonish = s
@@ -369,14 +282,17 @@ Top 10 bigrams — marissa,"('wanna go', 37); ('uh huh', 30); ('gonna get', 29);
           .replace(/\(\s*"([^"]+)"\s*,/g, '["$1",')
           .replace(/\),/g, "],")
           .replace(/\)\s*\]/g, "]]")
-          .replace(/\)\s*\s*$/g, "]]");
+          .replace(/\)\s*$/g, "]]");
         const arr = JSON.parse(jsonish);
-        return arr.map(it => ({ word: it[0], alex: Number(it[1]) || 0, marissa: Number(it[2]) || 0 }));
-      } catch (e) {
-        console.warn("Failed to parse triples:", e, str);
-        return [];
-      }
+        return arr.map(it => {
+          const first = Number(it[1]) || 0, second = Number(it[2]) || 0;
+          return (firstIs === "marissa")
+            ? { word: it[0], marissa: first, alex: second }
+            : { word: it[0], alex: first, marissa: second };
+        });
+      } catch { return []; }
     }
+
     function parseWordPairs(str) {
       const s = sanitizeTupleList(str);
       try {
@@ -385,100 +301,249 @@ Top 10 bigrams — marissa,"('wanna go', 37); ('uh huh', 30); ('gonna get', 29);
           .replace(/\(\s*"([^"]+)"\s*,/g, '["$1",')
           .replace(/\),/g, "],")
           .replace(/\)\s*\]/g, "]]")
-          .replace(/\)\s*\s*$/g, "]]");
+          .replace(/\)\s*$/g, "]]");
         const arr = JSON.parse(jsonish);
         return arr.map(it => ({ word: it[0], count: Number(it[1]) || 0 }));
-      } catch (e) {
-        console.warn("Failed to parse pairs:", e, str);
-        return [];
-      }
+      } catch { return []; }
     }
+
     function sortedByTotal(triples) {
       return [...triples].map(t => ({ ...t, total: (t.alex||0) + (t.marissa||0) })).sort((a,b) => b.total - a.total);
     }
 
-    // ===== Parse data and populate =====
+    function fmtSec(sec) {
+      if (!isFinite(sec) || sec == null) return "—";
+      sec = Math.max(0, Math.round(sec));
+      const h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = sec%60;
+      const pad = n => String(n).padStart(2,"0");
+      return h ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`;
+    }
+
+    function humanShort(secs) {
+      if (secs >= 3600) return Math.round(secs/3600) + "h";
+      if (secs >= 60)   return Math.round(secs/60) + "m";
+      return Math.round(secs) + "s";
+    }
+
+    // ---- Build data maps & quick cards ----
     const rows = csvToPairs(RAW);
     const dataMap = Object.fromEntries(rows);
-
-    // quick stats
     const totalMessages = Number(dataMap["Total messages"] || 0);
     const activeDays = Number((dataMap["Active days with ≥1 msg"] || "0").toString().replace(/,/g, ""));
     const avgPerDay = Number(dataMap["Messages per active day (avg)"] || 0);
     document.getElementById("totalMessages").textContent = totalMessages.toLocaleString();
+    document.getElementById("totalWords").textContent = Number(WORD_COUNT || 0).toLocaleString();
     document.getElementById("activeDays").textContent = activeDays.toLocaleString();
     document.getElementById("avgPerDay").textContent = avgPerDay.toLocaleString(undefined, { maximumFractionDigits: 2 });
+    document.getElementById("medianGap").textContent   = fmtSec(STATS.medianGapSec);
+    document.getElementById("meanGap").textContent     = fmtSec(STATS.meanGapSec);
+    document.getElementById("medianReply").textContent = fmtSec(STATS.medianReplyAnySec);
+    document.getElementById("meanReply").textContent   = fmtSec(STATS.meanReplyAnySec);
 
-    // table (filtered)
-    const tableBody = document.querySelector("#statsTable tbody");
-    rows.forEach(([k,v]) => {
-      if (HIDE_KEYS.has(k)) return;  // skip rows shown in charts
-      const tr = document.createElement("tr");
-      const tdK = document.createElement("td");
-      tdK.className = "stat";
-      tdK.textContent = k;
-      const tdV = document.createElement("td");
-      tdV.textContent = v;
-      tr.appendChild(tdK); tr.appendChild(tdV);
-      tableBody.appendChild(tr);
+    // ---- Single comparison table (Metric | alex | marissa | all) ----
+    const compareBody = document.querySelector("#compareTable tbody");
+    const alexSuffix = " — alex", mariSuffix = " — marissa", allSuffix  = " — All";
+    const found = new Set();
+    rows.forEach(([k,_]) => {
+      if (k.endsWith(alexSuffix))       found.add(k.slice(0, -alexSuffix.length));
+      else if (k.endsWith(mariSuffix))  found.add(k.slice(0, -mariSuffix.length));
+      else if (k.endsWith(allSuffix))   found.add(k.slice(0, -allSuffix.length));
     });
+    function addRow(base, aVal, mVal, allV) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td class="stat">${base}</td>
+                      <td class="center">${aVal ?? "—"}</td>
+                      <td class="center">${mVal ?? "—"}</td>
+                      <td class="center">${allV ?? "—"}</td>`;
+      compareBody.appendChild(tr);
+    }
+    Array.from(found).sort().forEach(base => {
+      if (HIDE_BASES.has(base)) return;  // hide tuple-heavy rows
+      const aVal = dataMap[base + alexSuffix];
+      const mVal = dataMap[base + mariSuffix];
+      const allV = dataMap[base + allSuffix];
+      if (aVal === undefined && mVal === undefined && allV === undefined) return;
+      addRow(base, aVal, mVal, allV);
+    });
+    [...compareBody.querySelectorAll("tr")].forEach(tr => {
+      const name = (tr.children[0]?.textContent || "").trim().toLowerCase();
+      if (name === "avg gap between msgs (sec)")    tr.children[3].textContent = Math.round(STATS.meanGapSec);
+      if (name === "median gap between msgs (sec)") tr.children[3].textContent = Math.round(STATS.medianGapSec);
+    });
+    addRow("Reply lag (sec) — median",
+           Math.round(STATS.medianReplyAlexSec),
+           Math.round(STATS.medianReplyMarissaSec),
+           Math.round(STATS.medianReplyAnySec));
+    addRow("Reply lag (sec) — mean",
+           Math.round(STATS.meanReplyAlexSec),
+           Math.round(STATS.meanReplyMarissaSec),
+           Math.round(STATS.meanReplyAnySec));
 
-    // charts
-    const distAlex = sortedByTotal(parseWordTriples(dataMap["Distinctive words — alex (top 20)"]));
-    const distMari = sortedByTotal(parseWordTriples(dataMap["Distinctive words — marissa (top 20)"]));
-    const topAlex = parseWordPairs(dataMap["Top 20 words — alex"]);
-    const topMari = parseWordPairs(dataMap["Top 20 words — marissa"]);
+    // ---- Charts (words) ----
+    const distAlex = sortedByTotal(parseWordTriples(dataMap["Distinctive words — alex (top 20)"], "alex"));
+    const distMari = sortedByTotal(parseWordTriples(dataMap["Distinctive words — marissa (top 20)"], "marissa"));
+    const topAlex  = parseWordPairs(dataMap["Top 20 words — alex"]);
+    const topMari  = parseWordPairs(dataMap["Top 20 words — marissa"]);
+    const cssAlex  = css('--alex'); const cssMari = css('--marissa');
 
-    const cssAlex = getComputedStyle(document.documentElement).getPropertyValue('--alex').trim();
-    const cssMari = getComputedStyle(document.documentElement).getPropertyValue('--marissa').trim();
+    const charts = [];
 
-    function hBarStacked(ctx, labels, aVals, bVals, aLabel="alex", bLabel="marissa") {
-      return new Chart(ctx, {
+    function hBarStacked(ctx, labels, aVals, bVals, aLabel, bLabel, aColor, bColor) {
+      const chart = new Chart(ctx, {
         type: "bar",
         data: { labels, datasets: [
-          { label: aLabel, data: aVals, backgroundColor: cssAlex },
-          { label: bLabel, data: bVals, backgroundColor: cssMari }
+          { label: aLabel, data: aVals, backgroundColor: aColor },
+          { label: bLabel, data: bVals, backgroundColor: bColor }
         ]},
         options: {
           indexAxis: "y",
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { position: "bottom" } },
-          scales: { x: { stacked:true, grid:{ color:"#f0f0f5" } }, y: { stacked:true, grid:{ display:false } } }
+          plugins: {
+            legend: { position: "bottom", labels: { color: textColor() } },
+            tooltip: { titleColor: textColor(), bodyColor: textColor(), backgroundColor: 'rgba(0,0,0,0.7)' }
+          },
+          scales: {
+            x: { stacked:true, grid:{ color: gridColor() }, ticks: { color: textColor() } },
+            y: { stacked:true, grid:{ display:false }, ticks: { color: textColor() } }
+          }
         }
       });
+      charts.push(chart);
+      return chart;
     }
-    function hBar(ctx, labels, vals, color, label) {
-      return new Chart(ctx, {
+    function hBar(ctx, labels, vals, color) {
+      const chart = new Chart(ctx, {
         type: "bar",
-        data: { labels, datasets: [{ label, data: vals, backgroundColor: color }] },
+        data: { labels, datasets: [{ data: vals, backgroundColor: color }] },
         options: {
           indexAxis: "y",
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display:false } },
-          scales: { x: { grid:{ color:"#f0f0f5" } }, y: { grid:{ display:false } } }
+          plugins: {
+            legend: { display:false },
+            tooltip: { titleColor: textColor(), bodyColor: textColor(), backgroundColor: 'rgba(0,0,0,0.7)' }
+          },
+          scales: {
+            x: { grid:{ color: gridColor() }, ticks: { color: textColor() } },
+            y: { grid:{ display:false }, ticks: { color: textColor() } }
+          }
         }
       });
+      charts.push(chart);
+      return chart;
     }
 
-    // Distinctive charts
-    hBarStacked(
-      document.getElementById("chartDistinctAlex"),
-      distAlex.map(x=>x.word),
-      distAlex.map(x=>x.alex),
-      distAlex.map(x=>x.marissa)
+    hBarStacked(document.getElementById("chartDistinctAlex"),
+      distAlex.map(x=>x.word), distAlex.map(x=>x.alex), distAlex.map(x=>x.marissa),
+      "alex", "marissa", cssAlex, cssMari
     );
-    hBarStacked(
-      document.getElementById("chartDistinctMarissa"),
-      distMari.map(x=>x.word),
-      distMari.map(x=>x.alex),
-      distMari.map(x=>x.marissa)
+    hBarStacked(document.getElementById("chartDistinctMarissa"),
+      distMari.map(x=>x.word), distMari.map(x=>x.marissa), distMari.map(x=>x.alex),
+      "marissa", "alex", cssMari, cssAlex
     );
+    hBar(document.getElementById("chartTopAlex"), topAlex.map(x=>x.word), topAlex.map(x=>x.count), cssAlex);
+    hBar(document.getElementById("chartTopMarissa"), topMari.map(x=>x.word), topMari.map(x=>x.count), cssMari);
 
-    // Top words (explicit colors to avoid blue bug)
-    hBar(document.getElementById("chartTopAlex"), topAlex.map(x=>x.word), topAlex.map(x=>x.count), cssAlex, "Top 20 — alex");
-    hBar(document.getElementById("chartTopMarissa"), topMari.map(x=>x.word), topMari.map(x=>x.count), cssMari, "Top 20 — marissa");
+    // ---- ONE combined reply-time frequency chart (stepped lines on log x-axis) ----
+    function buildSteppedSeries(edges, counts) {
+      // edges length N, counts length N-1 -> produce N points y[i] = counts[i] (last y repeats)
+      const ys = [];
+      for (let i = 0; i < edges.length; i++) {
+        ys.push(i < counts.length ? counts[i] : counts[counts.length-1] || 0);
+      }
+      return edges.map((x, i) => ({ x, y: ys[i] }));
+    }
+
+    function makeReplyAllChart() {
+      if (!LOG_HIST || !LOG_HIST.edges) {
+        // Hide card if nothing to show
+        document.getElementById("chartReplyAll").closest(".card").style.display = "none";
+        return;
+      }
+      const edges = LOG_HIST.edges;
+      const alex  = buildSteppedSeries(edges, LOG_HIST.alex_counts || []);
+      const mari  = buildSteppedSeries(edges, LOG_HIST.marissa_counts || []);
+      const ctx   = document.getElementById("chartReplyAll");
+
+      const chart = new Chart(ctx, {
+        type: "line",
+        data: {
+          datasets: [
+            { label: "alex replies", data: alex,   parsing: false, borderColor: css('--alex'),
+               stepped: 'before', fill: false, pointRadius: 0, borderWidth: 2 },
+            { label: "marissa replies", data: mari, parsing: false, borderColor: css('--marissa'),
+               stepped: 'before', fill: false, pointRadius: 0, borderWidth: 2 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: "bottom", labels: { color: textColor() } },
+            tooltip: {
+              intersect: false, mode: 'index',
+              titleColor: textColor(), bodyColor: textColor(), backgroundColor: 'rgba(0,0,0,0.7)',
+              callbacks: {
+                title: (items) => {
+                  const sec = items[0].parsed.x || 0;
+                  return "≈ " + humanShort(sec) + " reply time";
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              type: "logarithmic",
+              min: 1, max: 86400,  // 1s to 24h
+              grid: { color: gridColor() },
+              ticks: {
+                color: textColor(),
+                callback: (val) => {
+                  // Nice human labels at log steps
+                  if (val >= 3600) return Math.round(val/3600) + "h";
+                  if (val >= 60)   return Math.round(val/60) + "m";
+                  return Math.round(val) + "s";
+                }
+              },
+              title: { display: true, text: "Reply time (log seconds)", color: textColor() }
+            },
+            y: {
+              grid: { color: gridColor() },
+              ticks: { color: textColor() },
+              title: { display: true, text: "Count", color: textColor() }
+            }
+          }
+        }
+      });
+      charts.push(chart);
+    }
+    makeReplyAllChart();
+
+    // Update all charts on theme switch (ensures x/y titles & ticks go white)
+    function updateChartsForTheme() {
+      charts.forEach(ch => {
+        const opts = ch.options;
+        if (opts.scales?.x) {
+          opts.scales.x.grid.color   = gridColor();
+          if (opts.scales.x.ticks)   opts.scales.x.ticks.color = textColor();
+          if (opts.scales.x.title)   opts.scales.x.title.color = textColor();
+        }
+        if (opts.scales?.y) {
+          if (opts.scales.y.grid)    opts.scales.y.grid.color = gridColor();
+          if (opts.scales.y.ticks)   opts.scales.y.ticks.color = textColor();
+          if (opts.scales.y.title)   opts.scales.y.title.color = textColor();
+        }
+        if (opts.plugins?.legend?.labels) opts.plugins.legend.labels.color = textColor();
+        if (opts.plugins?.tooltip) {
+          opts.plugins.tooltip.titleColor = textColor();
+          opts.plugins.tooltip.bodyColor  = textColor();
+        }
+        ch.update();
+      });
+    }
+    // Apply theme once on load
+    updateChartsForTheme();
   </script>
 </body>
 </html>
